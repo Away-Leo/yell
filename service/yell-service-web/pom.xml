@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>yell-service</artifactId>
+        <groupId>com.yell</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>yell-service-web</artifactId>
+    <packaging>pom</packaging>
+    <name>yell-service-web</name>
+    <modules>
+        <module>yell-service-web-common</module>
+        <module>yell-service-web-app</module>
+        <module>yell-service-web-backend</module>
+    </modules>
+    <properties>
+        <deploy.skip>true</deploy.skip>
+    </properties>
+
+</project>

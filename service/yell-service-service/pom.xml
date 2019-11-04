@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>yell-service</artifactId>
+        <groupId>com.yell</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>yell-service-service</artifactId>
+    <name>yell-service-service</name>
+    <dependencies>
+        <dependency>
+            <groupId>com.yell</groupId>
+            <artifactId>yell-service-base</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <!--其他系统依赖-->
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.5</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.json-lib</groupId>
+            <artifactId>json-lib</artifactId>
+            <version>2.4</version>
+            <classifier>jdk15</classifier>
+        </dependency>
+    </dependencies>
+    <properties>
+        <deploy.skip>true</deploy.skip>
+    </properties>
+
+</project>

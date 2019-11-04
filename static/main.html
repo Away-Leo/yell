@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>后台管理系统</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8"/>
+
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" type="text/css" href="http://apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="http://cdn.bootcss.com/font-awesome/4.6.0/css/font-awesome.min.css">
+
+    <link rel="stylesheet" href="assets/css/vendor/animate/animate.min.css">
+    <link type="text/css" rel="stylesheet" media="all" href="assets/js/vendor/mmenu/css/jquery.mmenu.all.css"/>
+    <link rel="stylesheet" href="assets/js/vendor/videobackground/css/jquery.videobackground.css">
+    <link rel="stylesheet" href="assets/css/vendor/bootstrap-checkbox.css">
+
+    <link rel="stylesheet" href="assets/js/vendor/rickshaw/css/rickshaw.min.css">
+    <link rel="stylesheet" href="assets/js/vendor/morris/css/morris.css">
+    <link rel="stylesheet" href="assets/js/vendor/tabdrop/css/tabdrop.css">
+    <link rel="stylesheet" href="assets/js/vendor/summernote/css/summernote.css">
+    <link rel="stylesheet" href="assets/js/vendor/summernote/css/summernote-bs3.css">
+    <link rel="stylesheet" href="assets/js/vendor/chosen/css/chosen.min.css">
+    <link rel="stylesheet" href="assets/js/vendor/chosen/css/chosen-bootstrap.css">
+    <link rel="stylesheet" href="assets/js/vendor/datatables/css/dataTables.bootstrap.css">
+    <link rel="stylesheet" href="assets/js/vendor/datatables/css/ColVis.css">
+    <link rel="stylesheet" href="assets/js/vendor/datatables/css/TableTools.css">
+
+    <link rel="stylesheet" href="assets/js/tree/css/bootstrap-treeview.css">
+
+    <link href="assets/css/minimal.css" rel="stylesheet">
+
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/js/vendor/datatables/jquery.dataTables.js"></script>
+    <script src="assets/js/bootstrap.js"></script>
+    <script src="assets/js/html5shiv-3.7.0.js"></script>
+    <script src="assets/js/respond.min-1.3.0.js"></script>
+    <script src="assets/js/vendor/parsley/parsley.min.js"></script>
+    <script src="assets/js/tree/js/bootstrap-treeview.js"></script>
+    <![endif]-->
+</head>
+<body class="bg-1">
+
+
+<!-- Preloader -->
+<div class="mask">
+    <div id="loader"></div>
+</div>
+<!--/Preloader -->
+
+<!-- Wrap all page content here -->
+<div id="wrap">
+
+
+    <!-- Make page fluid -->
+    <div class="row">
+
+
+        <!-- Fixed navbar -->
+        <div class="navbar navbar-default navbar-fixed-top navbar-transparent-black mm-fixed-top" role="navigation"
+             id="navbar">
+
+
+            <!-- Branding -->
+            <div class="navbar-header col-md-2">
+                <a class="navbar-brand" href="index.html">
+                    <strong>后台管理系统</strong>
+                </a>
+                <div class="sidebar-collapse">
+                    <a href="#">
+                        <i class="fa fa-bars"></i>
+                    </a>
+                </div>
+            </div>
+            <!-- Branding end -->
+
+
+            <!-- .nav-collapse -->
+            <div class="navbar-collapse">
+
+                <!-- Page refresh -->
+                <!-- /Page refresh -->
+
+                <!-- Search -->
+                <!-- Search end -->
+
+                <!-- Quick Actions -->
+                <ul class="nav navbar-nav quick-actions">
+
+                    <li class="dropdown divided user" id="current-user">
+                        <div class="profile-photo">
+                            <img src="assets/images/logo-big.png" alt/>
+                        </div>
+                        <a class="dropdown-toggle options" data-toggle="dropdown" href="#" id="top_user_name">
+                            John Douey <i class="fa fa-caret-down"></i>
+                        </a>
+
+                        <ul class="dropdown-menu arrow settings">
+
+                            <li>
+
+                                <h3>Backgrounds:</h3>
+                                <ul id="color-schemes">
+                                    <li><a href="#" class="bg-1"></a></li>
+                                    <li><a href="#" class="bg-2"></a></li>
+                                    <li><a href="#" class="bg-3"></a></li>
+                                    <li><a href="#" class="bg-4"></a></li>
+                                    <li><a href="#" class="bg-5"></a></li>
+                                    <li><a href="#" class="bg-6"></a></li>
+                                </ul>
+
+                            </li>
+
+                            <li class="divider"></li>
+
+                            <li class="chosen-container">
+                                <a onclick="logOut()"><i class="fa fa-power-off"></i> 退出登录</a>
+                            </li>
+                        </ul>
+                    </li>
+
+                </ul>
+                <!-- /Quick Actions -->
+
+
+                <!-- Sidebar -->
+                <ul class="nav navbar-nav side-nav" id="sidebar">
+
+                    <li class="collapsed-content">
+                        <ul>
+                            <li class="search"><!-- Collapsed search pasting here at 768px --></li>
+                        </ul>
+                    </li>
+
+                    <li class="navigation" id="navigation">
+                        <a href="#" class="sidebar-toggle" data-toggle="#navigation">Navigation <i
+                                class="fa fa-angle-up"></i></a>
+
+                        <ul class="menu">
+                            <div id="leftSideMenu" ></div>
+                        </ul>
+
+                    </li>
+                </ul>
+                <!-- Sidebar end -->
+
+
+            </div>
+            <!--/.nav-collapse -->
+
+
+        </div>
+        <!-- Fixed navbar end -->
+
+
+        <!-- Page content -->
+        <div id="content" class="col-md-12">
+
+
+        </div>
+        <!-- Page content end -->
+
+
+
+
+    </div>
+    <!-- Make page fluid-->
+
+
+</div>
+<!-- Wrap all page content end -->
+
+
+<section class="videocontent" id="video"></section>
+
+
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script type="text/javascript" src="assets/js/vendor/mmenu/js/jquery.mmenu.min.js"></script>
+<script type="text/javascript" src="assets/js/vendor/sparkline/jquery.sparkline.min.js"></script>
+<script type="text/javascript" src="assets/js/vendor/nicescroll/jquery.nicescroll.min.js"></script>
+<script type="text/javascript" src="assets/js/vendor/animate-numbers/jquery.animateNumbers.js"></script>
+<script type="text/javascript" src="assets/js/vendor/videobackground/jquery.videobackground.js"></script>
+<script type="text/javascript" src="assets/js/vendor/blockui/jquery.blockUI.js"></script>
+
+<script src="assets/js/vendor/flot/jquery.flot.min.js"></script>
+<script src="assets/js/vendor/flot/jquery.flot.time.min.js"></script>
+<script src="assets/js/vendor/flot/jquery.flot.selection.min.js"></script>
+<script src="assets/js/vendor/flot/jquery.flot.animator.min.js"></script>
+<script src="assets/js/vendor/flot/jquery.flot.orderBars.js"></script>
+<script src="assets/js/vendor/easypiechart/jquery.easypiechart.min.js"></script>
+
+<script src="assets/js/vendor/rickshaw/raphael-min.js"></script>
+<script src="assets/js/vendor/rickshaw/d3.v2.js"></script>
+<script src="assets/js/vendor/rickshaw/rickshaw.min.js"></script>
+
+<script src="assets/js/vendor/datatables/jquery.dataTables.min.js"></script>
+<script src="assets/js/vendor/datatables/ColReorderWithResize.js"></script>
+<script src="assets/js/vendor/datatables/colvis/dataTables.colVis.min.js"></script>
+<script src="assets/js/vendor/datatables/tabletools/ZeroClipboard.js"></script>
+<script src="assets/js/vendor/datatables/tabletools/dataTables.tableTools.min.js"></script>
+<script src="assets/js/vendor/datatables/dataTables.bootstrap.js"></script>
+
+<script src="assets/js/vendor/morris/morris.min.js"></script>
+
+<script src="assets/js/vendor/tabdrop/bootstrap-tabdrop.min.js"></script>
+
+<script src="assets/js/vendor/summernote/summernote.min.js"></script>
+
+<script src="assets/js/vendor/chosen/chosen.jquery.min.js"></script>
+
+<script src="assets/js/minimal.min.js"></script>
+<script src="assets/js/pingxun-renren.js"></script>
+
+<script>
+    function logOut() {
+        PXF.ajax(LoginOutUrl,null,function (data) {
+            location.href="login.html";
+        })
+    }
+    $(document).ready(function () {
+        //退出登录
+        var tree=PXF.tree(getMenu,$('#leftSideMenu'),{
+            backColor:'#00000000',
+            showBorder:false,//1C1C1C
+            onhoverColor:'#1C1C1C',
+            selectedBackColor:'#1C1C1C',
+            color:'white',
+            expandIcon:'glyphicon glyphicon-list',
+            collapseIcon:'glyphicon glyphicon-circle-arrow-up',
+            selectedColor:'#3D7DB3',
+            onNodeSelected:function(event, data) {
+                // $("#menuPid").val(data.id);
+                if(data.menuUrl!=null&&data.menuUrl!=""&&data.menuUrl!=undefined){
+                    $("#content").load(data.menuUrl,null,function(){
+                        release();
+                    });
+                }
+            }
+        });
+
+        //top_user_name
+        PXF.ajax(findByUserIdUrl,null,function (data) {
+            $("#top_user_name").text(data.data.username);
+        });
+    })
+
+</script>
+</body>
+</html>
+

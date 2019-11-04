@@ -1,0 +1,405 @@
+<div class="pageheader">
+
+
+    <h2><i class="fa fa-tachometer"></i> 角色权限设置
+        <span></span>
+    </h2>
+    <div class="breadcrumbs">
+        <ol class="breadcrumb">
+            <li>当前位置</li>
+            <li>权限</li>
+            <li>角色权限设置</li>
+        </ol>
+    </div>
+
+
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <section class="tile color transparent-black">
+            <div class="tile-header">
+                <h1><strong></strong></h1>
+                <div class="controls">
+                    <a href="#" class="refresh"><i class="fa fa-refresh"></i></a>
+                    <a href="#" class="remove"><i class="fa fa-times"></i></a>
+                </div>
+            </div>
+            <div class="form-horizontal">
+
+                <div class="row">
+                    <form id="searchForm">
+                        <div class="form-group col-md-4">
+                            <label class="col-sm-4 control-label" for="roleNameSearch">角色名称</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" id="roleNameSearch" name="roleName"
+                                       placeholder="输入角色名称">
+                            </div>
+                        </div>
+                        <!--<div class="form-group col-md-4">-->
+                            <!--<label for="searchFormUserTypeSelectbox" class="col-sm-4 control-label">用户类型</label>-->
+                            <!--<div class="col-sm-8" id="searchFormUserTypeSelectboxDiv">-->
+                                <!--<select class="chosen-select chosen-transparent form-control"-->
+                                        <!--id="searchFormUserTypeSelectbox"-->
+                                        <!--parsley-trigger="change"-->
+                                        <!--parsley-error-container="#searchFormUserTypeSelectboxDiv">-->
+                                    <!--<option value="">请选择</option>-->
+                                    <!--<option value="manager">系统管理员</option>-->
+                                    <!--<option value="admin">超级管理员</option>-->
+                                <!--</select>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                        <!--<div class="form-group col-md-4">
+                            <label for="input07" class="col-sm-4 control-label">Normal select box *</label>
+                            <div class="col-sm-8" id="selectbox5">
+                                <select class="chosen-select chosen-transparent form-control" id="input09"
+                                        parsley-trigger="change" parsley-required="true" parsley-error-container="#selectbox">
+                                    <option value="">Please choose</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                </select>
+                            </div>
+                        </div>-->
+                        <div class="form-group col-md-4">
+                            <label class="col-sm-4 control-label">
+                            </label>
+                            <div class="col-sm-8">
+                                <button type="button" id="searchBtn" class="btn btn-primary">查询</button>
+                                <button type="button" id="resetBtn" class="btn btn-danger margin-left-15">重置</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="tile-body nopadding">
+                <a id="addRoleBtn" role="button" class="btn btn-success margin-15">添加角色</a>
+                <div class="modal fade" id="roleModalConfirm" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false"
+                     aria-labelledby="modalConfirmLabel" aria-hidden="true">
+                    <div class="modal-dialog" style="width: 60%">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal"
+                                        aria-hidden="true">关闭
+                                </button>
+                                <h3 class="modal-title" id="roleModalConfirmLabel"><strong>新增角色</strong></h3>
+                            </div>
+                            <div class="modal-body">
+                                <form class="form-horizontal" role="form" parsley-validate id="roleEditForm">
+                                    <input type="hidden" id="id" name="id"/>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="roleName" class="col-sm-4 control-label">角色名 *</label>
+                                            <div class="col-sm-8">
+                                                <input type="text" class="form-control" id="roleName" name="roleName"
+                                                       parsley-trigger="change" parsley-required="true"
+                                                       parsley-minlength="1" parsley-validation-minlength="1">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="roleCode" class="col-sm-4 control-label">角色编号(只能英文字母组成)*</label>
+                                            <div class="col-sm-8">
+                                                <input type="text" class="form-control" id="roleCode" name="roleCode"
+                                                       parsley-trigger="change" parsley-minlength="4" parsley-required="true"
+                                                       parsley-validation-minlength="1">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group form-footer">
+                                        <div class="custom-labels">
+                                            <button type="button" id="submitBtn" class="btn btn-primary">提交</button>
+                                            <button type="button" id="emptyBtn" class="btn btn-default">清空</button>
+                                        </div>
+                                    </div>
+
+                                </form>
+                            </div>
+                        </div><!-- /.modal-content -->
+                    </div><!-- /.modal-dialog -->
+                </div>
+                <!--<button type="button" class="btn btn-primary margin-15">Primary</button>-->
+            </div>
+            <div class="tile-body">
+                <table id="roleTable" class="table table-bordered table-sortable">
+                </table>
+            </div>
+        </section>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <section class="tile color transparent-black">
+            <!-- tile header -->
+            <div class="tile-header">
+                <h1><strong>角色所拥有菜单</strong></h1>
+                <br>
+                <br>
+                <h1><strong>当前选择角色：</strong><span id="currentUserName"></span></h1>
+            </div>
+            <div class="custom-labels">
+                <div >
+                    <button type="button" id="addBtn" class="btn btn-success">新增</button>
+                    <button type="button" id="deleteBtn" class="btn btn-danger margin-left-15">删除</button>
+                </div>
+            </div>
+            <div class="modal fade" id="modalConfirm" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false"
+                 aria-labelledby="modalConfirmLabel" aria-hidden="true">
+                <div class="modal-dialog" style="width: 25%">
+                    <input type="hidden" id="selectRole" name="roleCode" />
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal"
+                                    aria-hidden="true">关闭
+                            </button>
+                            <h3 class="modal-title" id="modalConfirmLabel"><strong>新增角色菜单权限</strong></h3>
+                        </div>
+                        <div class="modal-body">
+                            <div class="tile-body">
+                                <div class="row">
+                                    <div id="allMenuTree" style="height: 500px;overflow-y: scroll"></div>
+                                </div>
+                                <div class="custom-labels">
+                                    <button type="button" id="confirmBtn" class="btn btn-success">确定</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal-dialog -->
+            </div>
+            <!-- tile body -->
+            <div class="tile-body">
+                <div id="roleAuthMenuTree" ></div>
+            </div>
+            <!-- /tile body -->
+
+
+        </section>
+    </div>
+</div>
+<script type="text/javascript">
+    /*查询条件*/
+    var userManage = {
+        getQueryCondition: function (data) {
+            var param = {};// searchFormUserTypeSelectbox
+            param.roleName = $("#roleNameSearch").val();//查询条件
+            //组装分页参数
+            param.startIndex = data.start;
+            param.pageSize = data.length;
+            param.draw = data.draw;
+            return param;
+        }
+    };
+    var $table;
+    var HoleRoleCode="";
+    //角色列表删除
+    function deleteRole(data) {
+        PXF.confirmDialog("确认删除?",function () {
+            PXF.ajax(deleteRoleUrl,{id:data.id},function (result) {
+                $table.ajax.reload();
+            },function (error) {
+                
+            });
+        })
+    }
+    //角色列表编辑
+    function editRole(data) {
+        $("#id").val(data.id);
+        $("#roleName").val(data.roleName);
+        $("#roleCode").val(data.roleCode);
+        $("#roleModalConfirm").modal();
+    }
+    $(function () {
+        /*chosen.jquery.min.js配置*/
+        $(".chosen-select").chosen({
+            disable_search_threshold: 10,
+            disable_search: false,
+            allow_single_deselect: true,
+            max_selected_options: 1
+        });
+
+        /*添加按钮点击事件*/
+        $("#addBtn").click(function () {
+            if (HoleRoleCode == null || HoleRoleCode == "") {
+                PXF.errorDialog("请选择角色");
+                return;
+            }
+            loadAllMenuTree();
+            $("#modalConfirm").modal();
+        });
+        /*添加按钮点击事件*/
+        $("#addRoleBtn").click(function () {
+            // roleName roleCode
+            $("#id").val("");
+            $("#roleName").val("");
+            $("#roleCode").val("");
+            $("#roleModalConfirm").modal();
+        });
+
+        /*删除按钮*/
+        $("#deleteBtn").click(function () {
+            PXF.confirmDialog("确认删除？", function () {
+                var datas=$('#roleAuthMenuTree').treeview('getSelected');
+                var idsStr="";
+                for(var i=0;i<datas.length;i++){
+                    idsStr+=datas[i].id+",";
+                }
+                PXF.ajax(batchDeleteMenuConfUrl, JSON.stringify({ids: idsStr}), function (data) {
+                    loadTree({roles:HoleRoleCode},function (treeObj) {});
+                })
+            })
+        });
+        $table = $("#roleTable").dataTable($.extend(true, {}, CONSTANT.DATA_TABLES.DEFAULT_OPTION, {
+            ajax: function (data, callback, settings) {
+                //封装请求参数
+                var param = userManage.getQueryCondition(data);
+                PXF.ajax(getRoleConfPageUrl,param,function (result) {
+                    //异常判断与处理
+                    if (!result.success) {
+                        PXF.errorDialog(result.message);
+                        return;
+                    }
+                    //封装返回数据
+                    var returnData = {};
+                    returnData.draw = result.draw;//这里直接自行返回了draw计数器,应该由后台返回
+                    returnData.recordsTotal = result.data.totalElements;//总记录数
+                    returnData.recordsFiltered = result.data.totalElements;//后台不实现过滤功能，每次查询均视作全部结果
+                    returnData.data = result.data.content;
+                    //调用DataTables提供的callback方法，代表数据已封装完成并传回DataTables进行渲染
+                    //此时的数据需确保正确无误，异常判断应在执行此回调前自行处理完毕
+                    callback(returnData);
+                },function (error) {
+                    PXF.errorDialog("查询失败");
+                });
+            },
+            order: [[2, "desc"]],
+            //绑定数据
+            columns: [
+                {
+                    targets: 0,
+                    title: "角色名称",
+                    data: "roleName"
+                },
+                {
+                    targets: 1,
+                    title: "角色编号",
+                    data: "roleCode"
+                },
+                {
+                    targets: 2,
+                    title: "添加时间",
+                    data: "rawAddTime",
+                    render:function (data,type,row) {
+                        return PXF.timestampToTime(row.rawAddTime);
+                    }
+                },{
+                    targets:3,
+                    title: "操作",
+                    data:null,
+                    render : function(data,type, row, meta) {
+                        return "<button type='button' class='btn btn-danger' style='cursor: pointer' onclick='deleteRole("+JSON.stringify(row)+")'>删除</button>" +
+                            "<button type='button' class='btn btn-success margin-left-15' style='cursor: pointer' onclick='editRole("+JSON.stringify(row)+")'>编辑</button>";
+                    }
+                }
+            ],
+            createdRow: function (row, data, index) {
+                $('td', row).each(function (e) {
+                    $(this).attr("class", "text-center");
+                });
+                $(row).on("mouseover", function (e) {
+                    $(this).css("cursor", "pointer");
+                });
+                // $('td', row).eq(3).attr("class","actions text-center");
+            },
+            drawCallback: function (settings) {
+                //渲染完毕后的回调
+                //默认选中第一行
+                // $("tbody tr",$table).eq(0).click();
+            }
+        })).api();//此处需调用api()方法,否则返回的是JQuery对象而不是DataTables的API对象
+
+        $("#roleTable tbody").on("dblclick", "tr", function (e) {
+            //点击背景蓝色
+            $("#roleTable tr").removeClass("btn-primary");
+            $(this).addClass("btn-primary");
+            var data = $table.row(this).data();
+            HoleRoleCode=data.roleCode;
+            loadTree({roles:data.roleCode},function (treeObj) {});
+        });
+
+        $(document).on("mouseover", "#table tbody tr", function (e) {
+            $(this).css("cursor", "pointer");
+        });
+
+        //查询
+        $("#btn_search").click(function () {
+            $table.ajax.reload();
+        });
+
+
+        //加载树
+        function loadTree(params, initialize) {
+            /*第一个参数为pingxun-renren.js里面的url,第二个参数为需要加载树形结构的目标标签，第三个参数为bootstrap-treeview.js的配置参数*/
+            PXF.tree(getConfdMenuUrl, $('#roleAuthMenuTree'), {
+                multiSelect: true,
+                backColor: '#00000000',
+                showBorder: false,//1C1C1C
+                onhoverColor: '#1C1C1C',
+                selectedBackColor: '#1C1C1C',
+                color: 'white',
+                expandIcon: 'glyphicon glyphicon-list',
+                collapseIcon: 'glyphicon glyphicon-circle-arrow-up',
+                selectedColor: '#3D7DB3',
+                onNodeSelected: function (event, data) {
+                }
+            }, initialize, params);
+        }
+
+        //加载树
+        function loadAllMenuTree(params, initialize) {
+            /*第一个参数为pingxun-renren.js里面的url,第二个参数为需要加载树形结构的目标标签，第三个参数为bootstrap-treeview.js的配置参数*/
+            PXF.tree(getMenu, $('#allMenuTree'), {
+                multiSelect: true,
+                onNodeSelected: function (event, data) {
+
+                }
+            }, initialize, params);
+        }
+        /*授权弹出框确认按钮*/
+        $("#confirmBtn").click(function (data) {
+            var datas=$('#allMenuTree').treeview('getSelected');
+            var menuCodesStr="";
+            for(var i=0;i<datas.length;i++){
+                menuCodesStr+=datas[i].menuCode+",";
+            }
+            PXF.ajax(batchSaveMenuConfUrl,JSON.stringify({roleCode:HoleRoleCode,menuCodes:menuCodesStr}),function (data) {
+                $("#modalConfirm").modal("hide");
+                loadTree({roles:HoleRoleCode},function (treeObj) {});
+            },function (data) {})
+        });
+        //searchBtn resetBtn
+        $("#searchBtn").click(function () {
+            $table.ajax.reload();
+        });
+
+        $("#emptyBtn").click(function () {
+            $("#roleName").val("");
+            $("#roleCode").val("");
+        });
+        $("#submitBtn").click(function () {
+            var isValidate = $("#roleEditForm").parsley().validate();
+            if (isValidate) {
+                PXF.ajax(saveOrUpdateRoleUrl, $("#roleEditForm"), function (data) {
+                    $table.ajax.reload();//表格重载
+                    $("#roleModalConfirm").modal('hide');
+                    $("#roleCode").val("");
+                    $("#roleName").val("");
+                }, function () {
+                })
+            }
+        });
+    });
+</script>
+
+      

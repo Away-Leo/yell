@@ -1,0 +1,322 @@
+<div class="pageheader">
+
+
+    <h2><i class="fa fa-tachometer"></i> 用户角色设置
+        <span></span>
+    </h2>
+    <div class="breadcrumbs">
+        <ol class="breadcrumb">
+            <li>当前位置</li>
+            <li><a href="index.html">权限</a></li>
+            <li class="active">用户角色设置</li>
+        </ol>
+    </div>
+
+
+</div>
+
+
+<section class="tile color transparent-black">
+    <!-- tile header -->
+    <div class="tile-header">
+        <h1><strong></strong></h1>
+        <div class="controls">
+            <a href="#" class="refresh"><i class="fa fa-refresh"></i></a>
+            <a href="#" class="remove"><i class="fa fa-times"></i></a>
+        </div>
+    </div>
+    <!-- /tile header -->
+
+    <div class="form-horizontal">
+
+        <div class="row">
+            <form id="searchForm">
+                <div class="form-group col-md-4">
+                    <label class="col-sm-4 control-label" for="userNameSearch">用户账号</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" id="userNameSearch" name="userName"
+                               placeholder="输入用户账号">
+                    </div>
+                </div>
+                <div class="form-group col-md-4">
+                    <label class="col-sm-4 control-label">
+                    </label>
+                    <div class="col-sm-8">
+                        <button type="button" id="searchBtn" class="btn btn-primary">查询</button>
+                        <button type="button" id="resetBtn" class="btn btn-danger margin-left-15">重置</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+    </div>
+
+    <div class="tile-body nopadding">
+        <a id="addMenuBtn" role="button" class="btn btn-success margin-15">添加账号</a>
+        <div class="modal fade" id="modalConfirm" tabindex="-1" role="dialog" data-backdrop="static"
+             data-keyboard="false"
+             aria-labelledby="modalConfirmLabel" aria-hidden="true">
+            <div class="modal-dialog" style="width: 60%">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"
+                                aria-hidden="true">关闭
+                        </button>
+                        <h3 class="modal-title" id="modalConfirmLabel"><strong>新增账号</strong></h3>
+                    </div>
+                    <div class="modal-body">
+                        <form class="form-horizontal" role="form" parsley-validate id="basicvalidations">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="userName" class="col-sm-4 control-label">登录名 *</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control" id="userName" name="userName"
+                                               parsley-trigger="change" parsley-required="true"
+                                               parsley-minlength="1" parsley-validation-minlength="1">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="password" class="col-sm-4 control-label">密码*</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control" id="password" name="password"
+                                               parsley-trigger="change" parsley-minlength="4" parsley-required="true"
+                                               parsley-validation-minlength="1">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group form-footer">
+                                <div class="custom-labels">
+                                    <button type="button" id="submitBtn" class="btn btn-primary">提交</button>
+                                    <button type="button" id="emptyBtn" class="btn btn-default">清空</button>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div>
+        <!--<button type="button" class="btn btn-primary margin-15">Primary</button>-->
+        <table id="table" class="table table-bordered table-sortable">
+        </table>
+    </div>
+    <!-- /tile body -->
+
+</section>
+<section class="tile color transparent-black">
+    <div class="row ">
+        <div class="col-md-12">
+            <div class="col-lg-12 col-md-12">
+                <h2><strong>所属角色</strong></h2>
+                <ul class="nolisttypes inlineSelect inline cyan" id="roleUl">
+                    <li>
+                        <div class="checkbox">
+                            <input type="checkbox" value="1" id="opt05">
+                            <label for="opt05" style="width: 150px;">Option 1</label>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="checkbox">
+                            <input type="checkbox" checked="checked" value="1" id="opt06">
+                            <label for="opt06" style="width: 150px;">Option 2</label>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="checkbox">
+                            <input type="checkbox" value="1" id="opt07">
+                            <label for="opt07" style="width: 150px;">Option 3</label>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+<script type="text/javascript">
+    var $table;
+    var userManage = {
+        getQueryCondition: function (data) {
+            var param = {};//menuNameSearch menuUrlSearch
+            param.userName = $("#userNameSearch").val();//查询条件
+            //组装分页参数
+            param.startIndex = data.start;
+            param.pageSize = data.length;
+            param.draw = data.draw;
+            return param;
+        }
+    };
+
+    function deleteUser(data) {
+        PXF.confirmDialog("确认删除？", function () {
+            PXF.ajax(deleteUserUrl, {id: data.id}, function () {
+                $table.ajax.reload();
+            }, function () {
+            })
+        })
+    }
+    var userId="";
+
+    $(function () {
+
+        /*添加按钮点击事件*/
+        $("#addMenuBtn").click(function () {
+            $("#userName").val("");
+            $("#password").val("");
+            $("#modalConfirm").modal();
+        });
+
+        $table = $("#table").dataTable($.extend(true, {}, CONSTANT.DATA_TABLES.DEFAULT_OPTION, {
+            ajax: function (data, callback, settings) {
+                //封装请求参数
+                var param = userManage.getQueryCondition(data);
+                $.ajax({
+                    type: getUsersPageUrl.type,
+                    url: getUsersPageUrl.url,
+                    cache: false,  //禁用缓存
+                    data: param,    //传入已封装的参数
+                    dataType: "json",
+                    headers: {
+                        "Authorization": window.localStorage.getItem("token")
+                    },
+                    success: function (result) {
+                        //异常判断与处理
+                        if (!result.success) {
+                            PXF.errorDialog(result.message);
+                            return;
+                        }
+                        //封装返回数据
+                        var returnData = {};
+                        returnData.draw = result.draw;//这里直接自行返回了draw计数器,应该由后台返回
+                        returnData.recordsTotal = result.data.totalElements;//总记录数
+                        returnData.recordsFiltered = result.data.totalElements;//后台不实现过滤功能，每次查询均视作全部结果
+                        returnData.data = result.data.content;
+                        //调用DataTables提供的callback方法，代表数据已封装完成并传回DataTables进行渲染
+                        //此时的数据需确保正确无误，异常判断应在执行此回调前自行处理完毕
+                        callback(returnData);
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        PXF.errorDialog("查询失败");
+                    }
+                });
+            },
+            order: [[2, "desc"]],
+            //绑定数据
+            columns: [
+                {
+                    targets: 0,
+                    title: "用户名",
+                    data: "userName"
+                },
+                {
+                    targets: 1,
+                    title: "添加时间",
+                    data: "rawAddTime",
+                    orderable: true//排序
+                },
+                {
+                    targets: 2,
+                    title: "操作",
+                    data: null,
+                    orderable: false,
+                    render: function (data, type, row, meta) {
+                        return "<a class='delete' style='cursor: pointer' onclick='deleteUser(" + JSON.stringify(row) + ")'>删除</a>";
+                    }
+                }
+            ],
+            createdRow: function (row, data, index) {
+                $('td', row).each(function (e) {
+                    $(this).attr("class", "text-center");
+                });
+                $('td', row).eq(4).attr("class", "actions text-center");
+            },
+            drawCallback: function (settings) {
+                //渲染完毕后的回调
+                //默认选中第一行
+                // $("tbody tr",$table).eq(0).click();
+                userId="";
+            }
+        })).api();//此处需调用api()方法,否则返回的是JQuery对象而不是DataTables的API对象
+        $(document).on("mouseover", "#table tbody tr", function (e) {
+            $(this).css("cursor", "pointer");
+        });
+        $("#table tbody").on("dblclick", "tr", function (e) {
+            //点击背景蓝色
+            $("#table tr").removeClass("btn-primary");
+            $(this).addClass("btn-primary");
+            var data = $table.row(this).data();
+            userId=data.id;
+            PXF.ajax(getUserInfoUrl, {userId: data.id}, function (data) {
+                var rolsArray = data.data.roles.split(",");
+                $("#roleUl [type='checkbox']").removeAttr("checked");
+                for (var i = 0; i < rolsArray.length; i++) {
+                    $("#roleUl [type='checkbox'][value='"+rolsArray[i]+"']").prop("checked", "checked");
+                }
+
+            }, function (error) {
+
+            })
+        });
+        //查询
+        $("#btn_search").click(function () {
+            $table.ajax.reload();
+        });
+        //searchBtn resetBtn
+        $("#searchBtn").click(function () {
+            $table.ajax.reload();
+        });
+
+        $("#emptyBtn").click(function () {
+            $('#allMenu').treeview('uncheckAll', {silent: true});
+            $("#menuName").val("");
+            $("#menuUrl").val("");
+            $("#menuParentCode").val("");
+            $("#menuParentName").val("");
+            $("#menuCode").val("");
+        });
+        $("#submitBtn").click(function () {
+            var isValidate = $("#basicvalidations").parsley().validate();
+            if (isValidate) {
+                PXF.ajax(RegisterUrl, $("#basicvalidations"), function (data) {
+                    $table.ajax.reload();//表格重载
+                    $("#modalConfirm").modal('hide');//menuName menuUrl menuCode menuParentCode menuParentName
+                    $("#userName").val("");
+                    $("#password").val("");
+                }, function () {
+                })
+            }
+        });
+
+        //获取所有角色
+        PXF.ajax(roleListUrl, null, function (data) {
+            $("#roleUl").empty();
+            var result = data.data;
+            for (key in result) {
+                $("#roleUl").append("<li>" +
+                    "<div class='checkbox'>" +
+                    "<input type='checkbox' onchange='roleClick($(this))' value='" + result[key].roleCode + "' id='rid" + result[key].id + "'>" +
+                    "<label for='rid" + result[key].id + "' style='width: 150px;'>" + result[key].roleName + "</label>" +
+                    "</div>" +
+                    "</li>");
+            }
+        }, function (info) {
+
+        })
+
+    });
+    function roleClick(obj) {
+        var roleStr="";
+        $("#roleUl [type='checkbox']").each(function () {
+            if($(this).prop("checked")){
+                roleStr+=$(this).val()+",";
+            }
+        });
+        if(userId=="")return;
+        PXF.ajax(updateUserRoleUrl,JSON.stringify({userId:userId,roles:roleStr.substr(0,roleStr.length-1)}),function (result) {
+            
+        },function (error) {
+            
+        })
+    }
+</script>
+
+      

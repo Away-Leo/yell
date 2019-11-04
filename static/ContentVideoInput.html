@@ -1,0 +1,361 @@
+<link rel="stylesheet" href="assets/contextmenu/css/jquery.contextMenu.css"/>
+<link rel="stylesheet" href="assets/fileinput/css/fileinput.css"/>
+<link rel="stylesheet" href="assets/bootstrapselecter/bootstrap-select.css"/>
+<div class="pageheader">
+
+
+    <h2><i class="fa fa-tachometer"></i> 视频管理
+        <span></span>
+    </h2>
+    <div class="breadcrumbs">
+        <ol class="breadcrumb">
+            <li>当前位置</li>
+            <li><a href="index.html">内容管理</a></li>
+            <li class="active">视频管理</li>
+        </ol>
+    </div>
+
+
+</div>
+
+
+<section class="tile color transparent-black">
+    <!-- tile header -->
+    <div class="tile-header">
+        <h1><strong></strong></h1>
+        <div class="controls">
+            <a href="#" class="refresh"><i class="fa fa-refresh"></i></a>
+            <a href="#" class="remove"><i class="fa fa-times"></i></a>
+        </div>
+    </div>
+    <div class="tile-body nopadding">
+        <a id="addTypeBtn" role="button" class="btn btn-success margin-15">添加类别</a>
+        <div class="modal fade" id="modalConfirm" tabindex="-1" role="dialog" data-backdrop="static"
+             data-keyboard="false"
+             aria-labelledby="modalConfirmLabel" aria-hidden="true">
+            <div class="modal-dialog" style="width: 60%">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"
+                                aria-hidden="true">关闭
+                        </button>
+                        <h3 class="modal-title" id="modalConfirmLabel"><strong>新增类别</strong></h3>
+                    </div>
+                    <div class="modal-body">
+                        <form class="form-horizontal" role="form" parsley-validate id="typeEditForm">
+                            <input type="hidden" id="id" name="id"/>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="typeName" class="col-sm-4 control-label">类别名称 *</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control" id="typeName" name="typeName"
+                                               parsley-trigger="change" parsley-required="true"
+                                               parsley-minlength="1" parsley-validation-minlength="1">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group form-footer">
+                                <div class="custom-labels">
+                                    <button type="button" id="submitBtn" class="btn btn-primary">提交</button>
+                                    <button type="button" id="emptyBtn" class="btn btn-default">清空</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div>
+        <!--<button type="button" class="btn btn-primary margin-15">Primary</button>-->
+    </div>
+    <!-- /tile body -->
+    <div class="tile-body " id="videoTypeContainer">
+
+        <h4><strong>视频类别</strong></h4>
+        <p id="typeContainer">
+        </p>
+
+    </div>
+</section>
+<section class="tile color transparent-white">
+
+
+    <!-- tile header -->
+    <div class="tile-header">
+        <h1><strong>视频</strong> 上传</h1>
+        <div class="controls">
+            <a href="#" class="refresh"><i class="fa fa-refresh"></i></a>
+            <a href="#" class="remove"><i class="fa fa-times"></i></a>
+        </div>
+    </div>
+    <a id="detailSubmitBtn" role="button" class="btn btn-danger margin-15">提&nbsp;&nbsp;&nbsp;&nbsp;交</a>
+    <!-- /tile header -->
+
+    <!-- tile body -->
+    <div class="tile-body">
+        <form id="form" method="post" enctype="multipart/form-data">
+            <div class="row form-group">
+                <div class="col-sm-12">
+                    <input id="input-id" name="file" multiple="multiple" type="file" data-show-caption="true"/>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div id="detailModuleContent">
+    </div>
+</section>
+<script type="text/javascript" src="assets/contextmenu/js/jquery.contextMenu.min.js"></script>
+<script type="text/javascript" src="assets/fileinput/js/fileinput.js"></script>
+<script type="text/javascript" src="assets/fileinput/local/zh.js"></script>
+<script type="text/javascript" src="assets/bootstrapselecter/bootstrap-select.min.js"></script>
+<script type="text/javascript">
+    var onchangeTypeBtn;
+    var resultAyyar=new Array();
+    var haseUp={};
+    $(function () {
+        /*************************初始化方法**********************/
+        buildTypeBtn();
+        initFileInput("input-id");
+
+        /************************函数***********************/
+        //生成类别
+        function buildTypeBtn() {
+            PXF.ajax(getAllVideoTypeUrl, {}, function (result) {
+                var data = result.data;
+                $("#typeContainer").empty();
+                for (key in data) {
+                    $("#typeContainer").append("<button type='button' id='type" + data[key].id + "' value='" + data[key].typeCode + "'style='width: 100px' class='btn btn-default margin-bottom-20 col-xs-offset-1'>" + data[key].typeName + "</button>");
+                }
+                $("#typeContainer [type='button']").mouseover(function () {
+                    $("#typeContainer [type='button']").removeClass("btn-danger");
+                    $("#typeContainer [type='button']").addClass("btn-default");
+                    $(this).addClass("btn-danger");
+                });
+                $("#typeContainer [type='button']").contextMenu({
+                    width: 110, // width
+                    itemHeight: 30, // 菜单项height
+                    bgColor: "#333", // 背景颜色
+                    color: "#fff", // 字体颜色
+                    fontSize: 12, // 字体大小
+                    hoverColor: "#fff", // hover字体颜色
+                    hoverBgColor: "#99CC66", // hover背景颜色
+                    target: function (ele) { // 当前元素--jq对象
+                        onchangeTypeBtn = ele;
+                    },
+                    menu: [{ // 菜单项
+                        text: "编辑",
+                        icon: "assets/contextMenu/img/1.png",
+                        callback: function () {
+                            var reg = new RegExp("type", "g");
+                            $("#id").val(onchangeTypeBtn.attr("id").replace(reg, ""));
+                            $("#typeName").val(onchangeTypeBtn.text());
+                            $("#modalConfirm").modal();
+                        }
+                    },
+                        {
+                            text: "删除",
+                            icon: "assets/contextMenu/img/4.png",
+                            callback: function () {
+                                PXF.confirmDialog("确认删除?", function () {
+                                    var reg = new RegExp("type", "g");
+                                    var id = onchangeTypeBtn.attr("id").replace(reg, "");
+                                    PXF.ajax(deleteVideoTypeUrl, {id: id}, function (result) {
+                                        buildTypeBtn();
+                                    }, function (error) {
+
+                                    });
+                                });
+                            }
+                        }
+                    ]
+
+                });
+            }, function (error) {
+
+            });
+        }
+        //生成下拉类别
+        function buildTypeBtnDwon(objId) {
+            PXF.ajax(getAllVideoTypeUrl, {}, function (result) {
+                var data = result.data;
+                $("#"+objId).empty();
+                for (key in data) {
+                    $("#"+objId).append("<option value='"+data[key].typeCode+"'>"+data[key].typeName+"</option>");
+                }
+                initDownMenu(objId);
+            }, function (error) {
+
+            });
+        }
+
+        //文件上传控件初始化
+        function initFileInput(ctrlName) {
+            var control = $('#' + ctrlName);
+            control.fileinput({
+                language: 'zh', //设置语言
+                uploadUrl: uploadFileUrl.url, //上传的地址
+                //uploadExtraData:{"id": 1, "fileName":'123.mp3'},
+                uploadAsync: true, //默认异步上传
+                showUpload: true, //是否显示上传按钮
+                showRemove: false, //显示移除按钮
+                showPreview: true, //是否显示预览
+                showCaption: false,//是否显示标题
+                browseClass: "btn btn-primary", //按钮样式
+                maxFileCount: 5, //允许同时上传的最大文件个数
+                enctype: 'multipart/form-data',
+                validateInitialCount: true,
+                msgFilesTooMany: "选择上传的文件数量({n}) 超过允许的最大数值{m}！",
+
+            }).on('filepreupload', function (event, data, previewId, index) {     //上传中
+                console.log('文件正在上传');
+            }).on("fileuploaded", function (event, data, previewId, index) {    //一个文件上传成功
+                console.log(JSON.stringify(data.response.data[0]));//打印出返回的json
+                if(haseUp[data.response.data[0].origName]==undefined||haseUp[data.response.data[0].origName]==""){
+                    initDetailModul(data.response.data[0],previewId.substr(0,previewId.indexOf("_")));
+                    resultAyyar.push(data.response.data[0].origName);
+                    haseUp[data.response.data[0].origName]=1;
+                }
+            }).on('fileerror', function (event, data, msg) {  //一个文件上传失败
+                console.log('文件上传失败！' + data.status);
+            }).on('filesuccessremove', function (event, previewId, extra) {
+                $("#"+previewId.substr(0,previewId.indexOf("_"))).remove();
+            })
+        }
+
+        //图片上传控件初始化
+        function initPInput(ctrlName,origName) {
+            var control = $('#' + ctrlName);
+            control.fileinput({
+                language: 'zh', //设置语言
+                uploadUrl: uploadFileUrl.url, //上传的地址
+                uploadAsync: true, //默认异步上传
+                showUpload: true, //是否显示上传按钮
+                showRemove: false, //显示移除按钮
+                showPreview: true, //是否显示预览
+                showCaption: false,//是否显示标题
+                browseClass: "btn btn-primary", //按钮样式
+                maxFileCount: 1, //允许同时上传的最大文件个数
+                enctype: 'multipart/form-data',
+                validateInitialCount: true,
+                msgFilesTooMany: "选择上传的文件数量({n}) 超过允许的最大数值{m}！",
+
+            }).on('filepreupload', function (event, data, previewId, index) {     //上传中
+                console.log('文件正在上传');
+            }).on("fileuploaded", function (event, data, previewId, index) {    //一个文件上传成功
+                console.log(JSON.stringify(data.response.data[0].url));//打印出返回的json
+                $("#vimgUrl"+origName).val(data.response.data[0].url);
+            }).on('fileerror', function (event, data, msg) {  //一个文件上传失败
+                console.log('文件上传失败！' + data.status);
+            }).on('filesuccessremove', function (event, previewId, extra) {
+                alert(2);
+            })
+        }
+        //下拉多选菜单初始化
+        function initDownMenu(objId) {
+            $('#'+objId).selectpicker();
+        }
+        //详情输入模块初始化
+        function initDetailModul(data,previewId) {
+            $("#detailModuleContent").append("<div class='col-md-6 tile-body color transparent-white rounded-bottom-corners' id='"+previewId+"'>" +
+                "            <form class='form-horizontal detail-form' role='form'>" +
+                "                <div class='form-group'>" +
+                "                    <label for='vtype"+data.origName+"' class='col-sm-4 control-label'>视频所属类型</label>" +
+                "                    <div class='col-sm-8'>" +
+                "                        <select class='selectpicker form-control' multiple  data-live-search='true' data-style='btn-primary' name='typeCode' id='vtype"+data.origName+"'>" +
+                "                        </select>" +
+                "                    </div>" +
+                "                </div>" +
+                "                <div class='form-group'>" +
+                "                    <label for='vTitle"+data.origName+"' class='col-sm-4 control-label'>视频标题</label>" +
+                "                    <div class='col-sm-8'>" +
+                "                        <input type='text' class='form-control' id='vTitle"+data.origName+"' name='title' value='"+data.title+"'>" +
+                "                    </div>" +
+                "                </div>" +
+                "                <div class='form-group'>" +
+                "                    <label for='villustrate"+data.origName+"' class='col-sm-4 control-label'>视频说明</label>" +
+                "                    <div class='col-sm-8'>" +
+                "                        <textarea type='text' class='form-control' id='villustrate"+data.origName+"' name='illustrate'>"+data.title+"</textarea>" +
+                "                    </div>" +
+                "                </div>" +
+                "                <div class='form-group'>" +
+                "                    <label for='vimgUrlFile"+data.origName+"' class='col-sm-4 control-label'>封面图</label>" +
+                "                    <div class='col-sm-8'>" +
+                "                        <div class='input-group'>" +
+                "                            <input type='hidden' name='imgUrl' id='vimgUrl"+data.origName+"'/>" +
+                "                            <form method='post' enctype='multipart/form-data'>" +
+                "                                <div class='row form-group'>" +
+                "                                    <div class='col-sm-12'>" +
+                "                                        <i class='fa fa-upload'></i>" +
+                "                                        <input type='file' name='file' multiple='multiple' type='file' class='detailFile' data-show-caption='true' id='vimgUrlFile"+data.origName+"'>" +
+                "                                    </div>" +
+                "                                </div>" +
+                "                            </form>" +
+                "                        </div>" +
+                "                    </div>" +
+                "                </div>" +
+                "                <div class='form-group'>" +
+                "                    <label for='colorpicker1"+data.origName+"' class='col-sm-4 control-label'>视频地址</label>" +
+                "                    <div class='col-sm-8'>" +
+                "                        <textarea type='text' class='form-control' id='colorpicker1"+data.origName+"' name='url' >"+data.url+"</textarea>" +
+                "                    </div>" +
+                "                </div>" +
+                "            </form>" +
+                "        </div>");
+            initPInput("vimgUrlFile"+data.origName,data.origName);
+            buildTypeBtnDwon("vtype"+data.origName);
+        }
+
+        /************************事件***********************/
+        $("#addTypeBtn").click(function () {
+            $("#id").val("");
+            $("#typeName").val("");
+            $("#modalConfirm").modal();
+        });
+        $("#emptyBtn").click(function () {
+            $("#typeName").val("");
+        });
+        $("#submitBtn").click(function () {
+            PXF.ajax(saveOrUpdateVideoTypeUrl, $("#typeEditForm"), function (result) {
+                $("#modalConfirm").modal('hide');
+                buildTypeBtn();
+            }, function (error) {
+
+            })
+        });
+        $("#detailSubmitBtn").click(function () {
+            var postData=new Array();
+            for(var i=0;i<resultAyyar.length;i++){
+                var lineData={};
+                var vtype=$("#vtype"+resultAyyar[i]).val();
+                var vtypeStr="";
+                for(var j=0;j<vtype.length;j++){
+                    vtypeStr+=vtype[j]+",";
+                }
+                vtypeStr=vtypeStr.substr(0,vtypeStr.length-1);
+                var vTitle=$("#vTitle"+resultAyyar[i]).val();
+                var villustrate=$("#villustrate"+resultAyyar[i]).val();
+                var vimgUrl=$("#vimgUrl"+resultAyyar[i]).val();
+                var colorpicker1=$("#colorpicker1"+resultAyyar[i]).val();
+                lineData["typeCode"]=vtypeStr;
+                lineData["title"]=vTitle;
+                lineData["illustrate"]=villustrate;
+                lineData["imgUrl"]=vimgUrl;
+                lineData["url"]=colorpicker1;
+
+                postData.push(lineData);
+            }
+            PXF.ajax(batchSaveOrUpdateMeida,JSON.stringify(postData),function (data) {
+                PXF.successDialog("提交成功",function () {
+                    $("#input-id").fileinput('destroy');
+                    $(".detailFile").fileinput('destroy');
+                    initFileInput("input-id");
+                    $("#detailModuleContent").empty();
+                    resultAyyar=new Array();
+                });
+            },function (error) {
+                
+            })
+        });
+    });
+</script>
+
+      

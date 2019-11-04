@@ -1,0 +1,576 @@
+<link rel="stylesheet" href="assets/bootstrapselecter/bootstrap-select.css"/>
+<link rel="stylesheet" href="assets/video/css/video-js.min.css"/>
+<link rel="stylesheet" href="assets/fileinput/css/fileinput.css"/>
+<div class="pageheader">
+    <h2><i class="fa fa-tachometer"></i> 内容管理
+        <span></span>
+    </h2>
+    <div class="breadcrumbs">
+        <ol class="breadcrumb">
+            <li>当前位置</li>
+            <li><a href="index.html">内容管理</a></li>
+            <li class="active">视频列表预览</li>
+        </ol>
+    </div>
+
+
+</div>
+
+
+<section class="tile color transparent-black">
+    <!-- tile header -->
+    <div class="tile-header">
+        <h1><strong></strong></h1>
+        <div class="controls">
+            <a href="#" class="refresh"><i class="fa fa-refresh"></i></a>
+            <a href="#" class="remove"><i class="fa fa-times"></i></a>
+        </div>
+    </div>
+    <!-- /tile header -->
+
+    <div class="form-horizontal">
+
+        <div class="row">
+            <form id="searchForm">
+                <div class="form-group col-md-4">
+                    <label class="col-sm-4 control-label" for="typeCodeSearch">视频类型</label>
+                    <div class="col-sm-8">
+                        <select class="selectpicker form-control" multiple data-live-search="true"
+                                data-style="btn-primary" name="typeCode" id="typeCodeSearch">
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group col-md-4">
+                    <label class="col-sm-4 control-label">
+                    </label>
+                    <div class="col-sm-8">
+                        <button type="button" id="searchBtn" class="btn btn-primary">查询</button>
+                        <button type="button" id="resetBtn" class="btn btn-danger margin-left-15">重置</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+    </div>
+
+    <div class="tile-body nopadding">
+        <div class="modal fade" id="videoPlayModal" tabindex="-1" role="dialog" data-backdrop="static"
+             data-keyboard="false"
+             aria-labelledby="modalConfirmLabel" aria-hidden="true">
+            <div class="modal-dialog" style="width: 60%">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" id="closeModalBtn"
+                                aria-hidden="true">关闭
+                        </button>
+                    </div>
+                    <div class="modal-body" id="videoViewContent">
+                        <video id="videoView" class="video-js" controls preload="auto" width="760" height="400"
+                               data-setup="{}">
+                        </video>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div>
+    </div>
+
+    <div class="tile-body nopadding">
+        <div class="modal fade tile color transparent-black" id="modalConfirm" tabindex="-1" role="dialog"
+             data-backdrop="static"
+             data-keyboard="false"
+             aria-labelledby="modalConfirmLabel" aria-hidden="true">
+            <div class="modal-dialog" style="width: 60%">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"
+                                aria-hidden="true">关闭
+                        </button>
+                        <h3 class="modal-title" id="modalConfirmLabel"><strong>编辑视频信息</strong></h3>
+                    </div>
+                    <div class="modal-body">
+                        <div class='col-md-12 rounded-bottom-corners'>
+                            <form class='form-horizontal detail-form' role='form' parsley-validate
+                                  id="basicvalidations">
+                                <input type="hidden" id="id" name="id"/>
+                                <div class='form-group'>
+                                    <label for='vtype' class='col-sm-4 control-label'>视频所属类型</label>
+                                    <div class='col-sm-8'>
+                                        <select class='selectpicker form-control' multiple data-live-search='true'
+                                                data-style='btn-primary' name='typeCode' id='vtype'>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class='form-group'>
+                                    <label for='vTitle' class='col-sm-4 control-label'>视频标题</label>
+                                    <div class='col-sm-8'>
+                                        <input type='text' class='form-control' id='vTitle' name='title'>
+                                    </div>
+                                </div>
+                                <div class='form-group'>
+                                    <label for='villustrate' class='col-sm-4 control-label'>视频说明</label>
+                                    <div class='col-sm-8'>
+                                        <textarea type='text' class='form-control' id='villustrate'
+                                                  name='illustrate'></textarea>
+                                    </div>
+                                </div>
+                                <div class='form-group'>
+                                    <label for='vimgUrlFile' class='col-sm-4 control-label'>封面图</label>
+                                    <div class='col-sm-8'>
+                                        <div class='input-group'>
+                                            <input type='hidden' name='imgUrl' id='vimgUrl'/>
+                                            <form method='post' enctype='multipart/form-data'>
+                                                <div class='row form-group'>
+                                                    <div class='col-sm-12'>"
+                                                        <i class='fa fa-upload'></i>
+                                                        <input type='file' name='file' multiple='multiple' type='file'
+                                                               class='detailFile' data-show-caption='true'
+                                                               id='vimgUrlFile'>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='form-group'>
+                                    <label for='colorpicker1' class='col-sm-4 control-label'>视频地址</label>
+                                    <div class='col-sm-8'>
+                                        <textarea type='text' class='form-control' id='colorpicker1'
+                                                  name='url'></textarea>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-offset-5 col-sm-8">
+                                <button type="button" id="detailSubmitBtn" class="btn btn-success"
+                                        style="margin-top: 20px">确定
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div>
+        <!--<button type="button" class="btn btn-primary margin-15">Primary</button>-->
+        <table id="table" class="table table-bordered table-sortable">
+        </table>
+    </div>
+    <!-- /tile body -->
+
+</section>
+<script type="text/javascript" src="assets/bootstrapselecter/bootstrap-select.min.js"></script>
+<script type="text/javascript" src="assets/fileinput/js/fileinput.js"></script>
+<script type="text/javascript" src="assets/fileinput/local/zh.js"></script>
+<script type="text/javascript" src="assets/video/js/video.min.js"></script>
+<script type="text/javascript">
+
+    var $table;
+    var player;
+    //设置中文
+    videojs.addLanguage('zh-CN', {
+        "Play": "播放",
+        "Pause": "暂停",
+        "Current Time": "当前时间",
+        "Duration": "时长",
+        "Remaining Time": "剩余时间",
+        "Stream Type": "媒体流类型",
+        "LIVE": "直播",
+        "Loaded": "加载完毕",
+        "Progress": "进度",
+        "Fullscreen": "全屏",
+        "Non-Fullscreen": "退出全屏",
+        "Mute": "静音",
+        "Unmute": "取消静音",
+        "Playback Rate": "播放速度",
+        "Subtitles": "字幕",
+        "subtitles off": "关闭字幕",
+        "Captions": "内嵌字幕",
+        "captions off": "关闭内嵌字幕",
+        "Chapters": "节目段落",
+        "Close Modal Dialog": "关闭弹窗",
+        "Descriptions": "描述",
+        "descriptions off": "关闭描述",
+        "Audio Track": "音轨",
+        "You aborted the media playback": "视频播放被终止",
+        "A network error caused the media download to fail part-way.": "网络错误导致视频下载中途失败。",
+        "The media could not be loaded, either because the server or network failed or because the format is not supported.": "视频因格式不支持或者服务器或网络的问题无法加载。",
+        "The media playback was aborted due to a corruption problem or because the media used features your browser did not support.": "由于视频文件损坏或是该视频使用了你的浏览器不支持的功能，播放终止。",
+        "No compatible source was found for this media.": "无法找到此视频兼容的源。",
+        "The media is encrypted and we do not have the keys to decrypt it.": "视频已加密，无法解密。",
+        "Play Video": "播放视频",
+        "Close": "关闭",
+        "Modal Window": "弹窗",
+        "This is a modal window": "这是一个弹窗",
+        "This modal can be closed by pressing the Escape key or activating the close button.": "可以按ESC按键或启用关闭按钮来关闭此弹窗。",
+        ", opens captions settings dialog": ", 开启标题设置弹窗",
+        ", opens subtitles settings dialog": ", 开启字幕设置弹窗",
+        ", opens descriptions settings dialog": ", 开启描述设置弹窗",
+        ", selected": ", 选择",
+        "captions settings": "字幕设定",
+        "Audio Player": "音频播放器",
+        "Video Player": "视频播放器",
+        "Replay": "重播",
+        "Progress Bar": "进度小节",
+        "Volume Level": "音量",
+        "subtitles settings": "字幕设定",
+        "descriptions settings": "描述设定",
+        "Text": "文字",
+        "White": "白",
+        "Black": "黑",
+        "Red": "红",
+        "Green": "绿",
+        "Blue": "蓝",
+        "Yellow": "黄",
+        "Magenta": "紫红",
+        "Cyan": "青",
+        "Background": "背景",
+        "Window": "视窗",
+        "Transparent": "透明",
+        "Semi-Transparent": "半透明",
+        "Opaque": "不透明",
+        "Font Size": "字体尺寸",
+        "Text Edge Style": "字体边缘样式",
+        "None": "无",
+        "Raised": "浮雕",
+        "Depressed": "压低",
+        "Uniform": "均匀",
+        "Dropshadow": "下阴影",
+        "Font Family": "字体库",
+        "Proportional Sans-Serif": "比例无细体",
+        "Monospace Sans-Serif": "单间隔无细体",
+        "Proportional Serif": "比例细体",
+        "Monospace Serif": "单间隔细体",
+        "Casual": "舒适",
+        "Script": "手写体",
+        "Small Caps": "小型大写字体",
+        "Reset": "重启",
+        "restore all settings to the default values": "恢复全部设定至预设值",
+        "Done": "完成",
+        "Caption Settings Dialog": "字幕设定视窗",
+        "Beginning of dialog window. Escape will cancel and close the window.": "开始对话视窗。离开会取消及关闭视窗",
+        "End of dialog window.": "结束对话视窗"
+    });
+
+    //初始化
+    buildTypeBtnDwon();
+
+    var userManage = {
+        getQueryCondition: function (data) {
+            var param = {};//menuNameSearch menuUrlSearch
+            var vtype = $("#typeCodeSearch").val();
+            var vtypeStr = "";
+            if (vtype != undefined && vtype != null && vtype != "") {
+                for (var j = 0; j < vtype.length; j++) {
+                    vtypeStr += vtype[j] + ",";
+                }
+            }
+            param.typeCode = vtypeStr.substr(0, vtypeStr.length - 1);//查询条件
+            //组装分页参数
+            param.startIndex = data.start;
+            param.pageSize = data.length;
+            param.draw = data.draw;
+            return param;
+        }
+    };
+
+    function deleteUser(data) {
+        PXF.confirmDialog("确认删除？", function () {
+            PXF.ajax(deleteUserUrl, {id: data.id}, function () {
+                $table.ajax.reload();
+            }, function () {
+            })
+        })
+    }
+
+    var userId = "";
+
+    function initMuiltSelect() {
+        $("#typeCodeSearch").empty();
+
+    }
+
+    //生成下拉类别
+    function buildTypeBtnDwon() {
+        PXF.ajax(getAllVideoTypeUrl, {}, function (result) {
+            var data = result.data;
+            $("#typeCodeSearch").empty();
+            $("#vtype").empty();
+            for (key in data) {
+                AllMediaType[data[key].typeCode] = data[key].typeName;
+                $("#typeCodeSearch").append("<option value='" + data[key].typeCode + "'>" + data[key].typeName + "</option>");
+                $("#vtype").append("<option value='" + data[key].typeCode + "'>" + data[key].typeName + "</option>");
+            }
+            $('#typeCodeSearch').selectpicker();
+            $('#vtype').selectpicker();
+            $table.ajax.reload();
+        }, function (error) {
+
+        });
+    }
+
+    //图片上传控件初始化
+    function initPInput(ctrlName, initPic) {
+        var control = $('#' + ctrlName);
+        control.fileinput({
+            language: 'zh', //设置语言
+            uploadUrl: uploadFileUrl.url, //上传的地址
+            uploadAsync: true, //默认异步上传
+            initialPreview: [
+                "<img src='" + initPic + "' class='file-preview-image'>"
+            ],
+            showUpload: true, //是否显示上传按钮
+            showRemove: false, //显示移除按钮
+            showPreview: true, //是否显示预览
+            showCaption: false,//是否显示标题
+            browseClass: "btn btn-primary", //按钮样式
+            maxFileCount: 1, //允许同时上传的最大文件个数
+            enctype: 'multipart/form-data',
+            validateInitialCount: true,
+            msgFilesTooMany: "选择上传的文件数量({n}) 超过允许的最大数值{m}！",
+
+        }).on('filepreupload', function (event, data, previewId, index) {     //上传中
+            console.log('文件正在上传');
+        }).on("fileuploaded", function (event, data, previewId, index) {    //一个文件上传成功
+            console.log(JSON.stringify(data.response.data[0].url));//打印出返回的json
+            $("#vimgUrl").val(data.response.data[0].url);
+        }).on('fileerror', function (event, data, msg) {  //一个文件上传失败
+            console.log('文件上传失败！' + data.status);
+        }).on('filesuccessremove', function (event, previewId, extra) {
+        })
+    }
+
+    function editVideo(data) {
+        $("#vtype").val(data.typeCode.split(','));
+        $('#vtype').selectpicker('refresh');
+        $("#vTitle").val(data.title);
+        $("#villustrate").text(data.illustrate);
+        $("#vimgUrl").val(data.imgUrl);
+        $("#id").val(data.id);
+        $("#colorpicker1").text(data.url);
+        initPInput("vimgUrlFile", data.imgUrl);
+        $("#modalConfirm").modal();
+    }
+
+    function deleteVideo(data) {
+        PXF.confirmDialog("确认删除?", function () {
+            PXF.ajax(deleteMediaUrl, {id: data.id}, function (data) {
+                $table.ajax.reload();
+            }, function (error) {
+
+            })
+        });
+    }
+
+
+    $(function () {
+
+        /*添加按钮点击事件*/
+        $("#addMenuBtn").click(function () {
+            $("#userName").val("");
+            $("#password").val("");
+            $("#modalConfirm").modal();
+        });
+        $("#detailSubmitBtn").click(function () {
+            var lineData = {};
+            var vtype = $("#vtype").val();
+            var vtypeStr = "";
+            for (var j = 0; j < vtype.length; j++) {
+                vtypeStr += vtype[j] + ",";
+            }
+            vtypeStr = vtypeStr.substr(0, vtypeStr.length - 1);
+            var vTitle = $("#vTitle").val();
+            var id = $("#id").val();
+            var villustrate = $("#villustrate").val();
+            var vimgUrl = $("#vimgUrl").val();
+            var colorpicker1 = $("#colorpicker1").val();
+            lineData["typeCode"] = vtypeStr;
+            lineData["title"] = vTitle;
+            lineData["illustrate"] = villustrate;
+            lineData["imgUrl"] = vimgUrl;
+            lineData["url"] = colorpicker1;
+            lineData["id"] = id;
+
+            PXF.ajax(editMediaUrl, JSON.stringify(lineData), function (data) {
+                PXF.successDialog("提交成功", function () {
+                    $("#vimgUrlFile").fileinput('destroy');
+                    $("#modalConfirm").modal('hide');
+                    $table.ajax.reload();
+                });
+            }, function (error) {
+
+            })
+        });
+
+        $table = $("#table").dataTable($.extend(true, {}, CONSTANT.DATA_TABLES.DEFAULT_OPTION, {
+            ajax: function (data, callback, settings) {
+                //封装请求参数
+                var param = userManage.getQueryCondition(data);
+                $.ajax({
+                    type: findMediaByPageUrl.type,
+                    url: findMediaByPageUrl.url,
+                    cache: false,  //禁用缓存
+                    data: param,    //传入已封装的参数
+                    dataType: "json",
+                    headers: {
+                        "Authorization": window.localStorage.getItem("token")
+                    },
+                    success: function (result) {
+                        //异常判断与处理
+                        if (!result.success) {
+                            PXF.errorDialog(result.message);
+                            return;
+                        }
+                        //封装返回数据
+                        var returnData = {};
+                        returnData.draw = result.draw;//这里直接自行返回了draw计数器,应该由后台返回
+                        returnData.recordsTotal = result.data.totalElements;//总记录数
+                        returnData.recordsFiltered = result.data.totalElements;//后台不实现过滤功能，每次查询均视作全部结果
+                        returnData.data = result.data.content;
+                        //调用DataTables提供的callback方法，代表数据已封装完成并传回DataTables进行渲染
+                        //此时的数据需确保正确无误，异常判断应在执行此回调前自行处理完毕
+                        callback(returnData);
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        PXF.errorDialog("查询失败");
+                    }
+                });
+            },
+            //绑定数据
+            columns: [
+                {
+                    targets: 0,
+                    title: "所属类型",
+                    data: "typeCode",
+                    render: function (data, type, row, meta) {
+                        var typeCodes = row.typeCode + "";
+                        var codesArray = typeCodes.split(",");
+                        var typeStr = "";
+                        for (var i = 0; i < codesArray.length; i++) {
+                            typeStr += AllMediaType[codesArray[i]] + ","
+                        }
+                        return typeStr.substr(0, typeStr.length - 1);
+                    }
+                }, {
+                    targets: 1,
+                    title: "视频标题",
+                    data: "title"
+                },
+                {
+                    targets: 2,
+                    title: "封面图片(点击可预览影片)",
+                    data: "imgUrl",
+                    render: function (data, type, row, meta) {
+                        return "<img src='" + row.imgUrl + "' width='200px' height='160px' onclick='viewVideo(" + JSON.stringify(row) + ")'/>";
+                    }
+                },
+                {
+                    targets: 3,
+                    title: "操作",
+                    render: function (data, type, row, meta) {
+                        return "<button class='btn btn-success' style='cursor: pointer' onclick='editVideo(" + JSON.stringify(row) + ")'>编辑</button>" +
+                            "&nbsp;&nbsp;<button class='btn btn-danger' style='cursor: pointer' onclick='deleteVideo(" + JSON.stringify(row) + ")'>删除</button>";
+                    }
+                }
+            ],
+            createdRow: function (row, data, index) {
+                $('td', row).each(function (e) {
+                    $(this).attr("class", "text-center");
+                });
+                $('td', row).eq(4).attr("class", "actions text-center");
+            },
+            drawCallback: function (settings) {
+                //渲染完毕后的回调
+                //默认选中第一行
+                // $("tbody tr",$table).eq(0).click();
+                userId = "";
+            }
+        })).api();//此处需调用api()方法,否则返回的是JQuery对象而不是DataTables的API对象
+        $(document).on("mouseover", "#table tbody tr", function (e) {
+            $(this).css("cursor", "pointer");
+        });
+        $("#table tbody").on("dblclick", "tr", function (e) {
+            //点击背景蓝色
+            $("#table tr").removeClass("btn-primary");
+            $(this).addClass("btn-primary");
+        });
+        //查询
+        $("#btn_search").click(function () {
+            $table.ajax.reload();
+        });
+        //searchBtn resetBtn
+        $("#searchBtn").click(function () {
+            $table.ajax.reload();
+        });
+
+        $("#emptyBtn").click(function () {
+            $('#allMenu').treeview('uncheckAll', {silent: true});
+            $("#menuName").val("");
+            $("#menuUrl").val("");
+            $("#menuParentCode").val("");
+            $("#menuParentName").val("");
+            $("#menuCode").val("");
+        });
+        $("#submitBtn").click(function () {
+            var isValidate = $("#basicvalidations").parsley().validate();
+            if (isValidate) {
+                PXF.ajax(RegisterUrl, $("#basicvalidations"), function (data) {
+                    $table.ajax.reload();//表格重载
+                    $("#modalConfirm").modal('hide');//menuName menuUrl menuCode menuParentCode menuParentName
+                    $("#userName").val("");
+                    $("#password").val("");
+                }, function () {
+                })
+            }
+        });
+        $("#closeModalBtn").click(function () {
+            player.pause();
+        });
+
+        //获取所有角色
+        PXF.ajax(roleListUrl, null, function (data) {
+            $("#roleUl").empty();
+            var result = data.data;
+            for (key in result) {
+                $("#roleUl").append("<li>" +
+                    "<div class='checkbox'>" +
+                    "<input type='checkbox' onchange='roleClick($(this))' value='" + result[key].roleCode + "' id='rid" + result[key].id + "'>" +
+                    "<label for='rid" + result[key].id + "' style='width: 150px;'>" + result[key].roleName + "</label>" +
+                    "</div>" +
+                    "</li>");
+            }
+        }, function (info) {
+
+        })
+
+    });
+
+    function roleClick(obj) {
+        var roleStr = "";
+        $("#roleUl [type='checkbox']").each(function () {
+            if ($(this).prop("checked")) {
+                roleStr += $(this).val() + ",";
+            }
+        });
+        if (userId == "") return;
+        PXF.ajax(updateUserRoleUrl, JSON.stringify({
+            userId: userId,
+            roles: roleStr.substr(0, roleStr.length - 1)
+        }), function (result) {
+
+        }, function (error) {
+
+        })
+    }
+
+    function viewVideo(data) {
+        videojs("videoView").ready(function () {
+            var myPlayer = this;
+            player = this;
+            myPlayer.src(data.url);
+            /*动态设置video.js播放的地址。*/
+        });
+        $("#videoPlayModal").modal();
+    }
+</script>
+
+      
