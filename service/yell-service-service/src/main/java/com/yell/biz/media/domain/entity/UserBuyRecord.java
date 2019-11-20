@@ -30,4 +30,7 @@ public class UserBuyRecord extends BaseEntity {
     @Column(name="order_id",columnDefinition="varchar(200)  comment '订单ID'")
     private String oderId;
 
+    @Column(name="order_amount",columnDefinition="varchar(8)  comment '订单金额'")
+    private String oderAmount;
+
 }

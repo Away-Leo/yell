@@ -24,4 +24,6 @@ public class MediaOrderDto extends BaseDto {
     /**视频ID**/
     private String videoId;
 
+    private String orderAmount;
+
 }

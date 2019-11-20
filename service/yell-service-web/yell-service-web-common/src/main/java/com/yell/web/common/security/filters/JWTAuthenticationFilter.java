@@ -60,6 +60,7 @@ public class JWTAuthenticationFilter extends BasicAuthenticationFilter {
         //进行签名认证
         try {
             String url=getRequestURI(request);
+            log.info("请求地址为:"+url);
             if(url.startsWith("/common/")||url.startsWith("/druid/")){
                 chain.doFilter(request,response);
             }else{

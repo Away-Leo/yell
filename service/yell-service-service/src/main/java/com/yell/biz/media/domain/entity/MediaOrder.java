@@ -27,4 +27,7 @@ public class MediaOrder extends BaseEntity {
     @Column(name="video_id",columnDefinition="varchar(255)  comment '视频ID'")
     private String videoId;
 
+    @Column(name="order_amount",columnDefinition="varchar(8)  comment '订单金额'")
+    private String orderAmount;
+
 }

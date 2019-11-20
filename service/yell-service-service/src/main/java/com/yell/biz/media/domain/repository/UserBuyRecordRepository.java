@@ -16,4 +16,6 @@ public interface UserBuyRecordRepository extends BaseRepository<UserBuyRecord,Lo
 
 
     public List<UserBuyRecord> findByUserIdAndVideoId(String userId, int videoId);
+
+    List<UserBuyRecord> findByOderId(String oderId);
 }

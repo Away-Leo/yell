@@ -61,7 +61,7 @@ public class MediaCommonController extends AbstractCommonController {
     @ResponseBody
     public CPViewResultInfo getMediaOrder(CPViewResultInfo info, UserBuyRecordDto userBuyRecordDto){
         try{
-            info.newSuccess(userBuyRecordAppService.buildOrderNew(userBuyRecordDto.getUserId(),userBuyRecordDto.getVideoId()));
+            info.newSuccess(userBuyRecordAppService.buildOrderNew(userBuyRecordDto.getUserId(),userBuyRecordDto.getVideoId(),userBuyRecordDto.getSource()));
         }catch (Exception e){
             info.newFalse(e);
         }

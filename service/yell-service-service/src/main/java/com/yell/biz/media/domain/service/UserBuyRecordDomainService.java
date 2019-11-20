@@ -36,4 +36,13 @@ public class UserBuyRecordDomainService extends BaseDomainService<UserBuyRecordR
         }
     }
 
+    public List<UserBuyRecordDto> findByOrderId(String orderId){
+        List<UserBuyRecord> source=this.CT.findByOderId(orderId);
+        if(ObjectHelper.isNotEmpty(source)){
+            return toDtoList(source,UserBuyRecordDto.class);
+        }else{
+            return null;
+        }
+    }
+
 }

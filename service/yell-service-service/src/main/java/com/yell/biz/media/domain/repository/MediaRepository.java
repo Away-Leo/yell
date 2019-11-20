@@ -36,8 +36,16 @@ public interface MediaRepository extends BaseRepository<Media,Long>{
                     }
                 }
             }
+            if(ObjectHelper.isNotEmpty(mediaDto.isFree())){
+                hql.append(" and free =:free ");
+                condition.put("free",mediaDto.isFree());
+            }
         }
-        hql.append(" order by rand()  ");
+        if(ObjectHelper.isNotEmpty(mediaDto.isBackendQuery())&&mediaDto.isBackendQuery()){
+            hql.append(" order by rawAddTime desc  ");
+        }else{
+            hql.append(" order by rand()  ");
+        }
         return findByHqlPage(pageable,hql.toString(),condition);
     }
 

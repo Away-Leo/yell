@@ -11,10 +11,12 @@ import com.yell.base.util.Md5SaltUtil;
 import com.yell.base.util.ObjectHelper;
 import com.yell.biz.media.app.dto.MediaDto;
 import com.yell.biz.media.app.dto.MediaOrderDto;
+import com.yell.biz.media.app.dto.SourceDto;
 import com.yell.biz.media.app.dto.UserBuyRecordDto;
 import com.yell.biz.media.domain.entity.MediaOrder;
 import com.yell.biz.media.domain.entity.UserBuyRecord;
 import com.yell.biz.media.domain.service.MediaOrderDomainService;
+import com.yell.biz.media.domain.service.SourceDomainService;
 import com.yell.biz.media.domain.service.UserBuyRecordDomainService;
 import com.zds.common.lang.exception.BusinessException;
 import com.zds.common.lang.security.MD5Util;
@@ -55,21 +57,34 @@ public class UserBuyRecordAppService extends BaseAppService<UserBuyRecordDomainS
 
     private final MediaAppService mediaAppService;
 
-    private final SocketClientComponent socketClientComponent;
-
     private final MediaOrderDomainService mediaOrderDomainService;
 
+    private final SourceDomainService sourceDomainService;
+
     @Autowired
-    public UserBuyRecordAppService(SocketClientComponent socketClientComponent, MediaAppService mediaAppService, MediaOrderDomainService mediaOrderDomainService) {
-        this.socketClientComponent = socketClientComponent;
+    public UserBuyRecordAppService(MediaAppService mediaAppService, MediaOrderDomainService mediaOrderDomainService, SourceDomainService sourceDomainService) {
         this.mediaAppService = mediaAppService;
         this.mediaOrderDomainService = mediaOrderDomainService;
+        this.sourceDomainService = sourceDomainService;
     }
 
     public boolean userIsBuyVedio(String userId, int vid) {
         if (ObjectHelper.isNotEmpty(userId) && ObjectHelper.isNotEmpty(vid)) {
             List<UserBuyRecordDto> source = this.BDS.findByUserIdAndVedioId(userId, vid);
             if (ObjectHelper.isNotEmpty(source) && source.size() > 0) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            throw new BusinessException(ENUM_EXCEPTION.E10001.code, ENUM_EXCEPTION.E10001.msg);
+        }
+    }
+
+    public boolean checkOrder(String oderId) {
+        if (ObjectHelper.isNotEmpty(oderId)) {
+            List<UserBuyRecordDto> sourceData = this.BDS.findByOrderId(oderId);
+            if (ObjectHelper.isNotEmpty(sourceData) && sourceData.size() > 0) {
                 return true;
             } else {
                 return false;
@@ -96,17 +111,28 @@ public class UserBuyRecordAppService extends BaseAppService<UserBuyRecordDomainS
     }
 
     @Transactional
-    public String buildOrderNew(String userId, int vid) throws Exception {
+    public String buildOrderNew(String userId, int vid, String sourceCode) throws Exception {
+        SourceDto sourceDto = this.sourceDomainService.findByCode(sourceCode);
+        String notifyUrl = "";
+        String returnUrlStr = "";
+        int maximum=ObjectHelper.isNotEmpty(sourceDto.getMaximumAmount())?sourceDto.getMaximumAmount():5;
+        int minimum=ObjectHelper.isNotEmpty(sourceDto.getMinimumAmount())?sourceDto.getMinimumAmount():4;
+        if (ObjectHelper.isNotEmpty(sourceDto)) {
+            notifyUrl = sourceDto.getSourceNotifyUrl();
+            returnUrlStr = sourceDto.getSourceReturnUrl();
+        } else {
+            throw new BusinessException(ENUM_EXCEPTION.E10002.code, ENUM_EXCEPTION.E10002.msg);
+        }
         String url = "http://xx.xhjfr.cn/api/pay/pay";
         String key = "2l8F9SQkXpSF2UPM82iIIlb7IJLip8Im";
         String sign = "";
         Map<String, String> params = new TreeMap<>();
         Map<String, String> result = new LinkedHashMap<>();
-        params.put("notify_url", notify);
-        params.put("order_amount", (int)(4+Math.random()*(5-4+1))+"."+(int)(0+Math.random()*(9-0+1))+""+(int)(0+Math.random()*(9-0+1)));
+        params.put("notify_url", notifyUrl);
+        params.put("order_amount", (int) (minimum + Math.random() * (maximum - minimum + 1)) + "." + (int) (0 + Math.random() * (9 - 0 + 1)) + "" + (int) (0 + Math.random() * (9 - 0 + 1)));
         params.put("pay_type", "Wxgzh");
-        params.put("pay_sn", DateHelper.longDate(new Date()) + "" +(new Random().nextInt(999 - 100 + 1) + 100) + "");
-        params.put("return_url", returnUrl + "?userId=" + userId + "&vid=" + vid);
+        params.put("pay_sn", DateHelper.longDate(new Date()) + "" + (new Random().nextInt(999 - 100 + 1) + 100) + "");
+        params.put("return_url", returnUrlStr + "?userId=" + userId + "&vid=" + vid);
         params.put("seller_id", "1936");
         params.entrySet().stream()
                 .sorted(Map.Entry.comparingByKey())
@@ -120,6 +146,7 @@ public class UserBuyRecordAppService extends BaseAppService<UserBuyRecordDomainS
         MediaOrderDto mediaOrderDto = new MediaOrderDto();
         mediaOrderDto.setOrderId(params.get("pay_sn"));
         mediaOrderDto.setUserId(userId);
+        mediaOrderDto.setOrderAmount(params.get("order_amount"));
         mediaOrderDto.setVideoId(vid + "");
         this.mediaOrderDomainService.saveData(mediaOrderDto, MediaOrder.class);
         return url + "?" + HttpClientUtil.convertStringParamter(params);
@@ -131,13 +158,14 @@ public class UserBuyRecordAppService extends BaseAppService<UserBuyRecordDomainS
          */
         PrintWriter printWriter = response.getWriter();
         Map requestParams = request.getParameterMap(); //获取请求的全部参数
-        String[] orderId=(String[]) requestParams.get("out_pay_sn");
+        String[] orderId = (String[]) requestParams.get("out_pay_sn");
         MediaOrderDto mediaOrderDto = this.mediaOrderDomainService.findByOrderId(orderId[0]);
-        if (ObjectHelper.isNotEmpty(mediaOrderDto)) {
+        if (ObjectHelper.isNotEmpty(mediaOrderDto) && !checkOrder(orderId[0])) {
             UserBuyRecordDto userBuyRecordDto = new UserBuyRecordDto();
             userBuyRecordDto.setVideoId(Integer.valueOf(mediaOrderDto.getVideoId()));
             userBuyRecordDto.setUserId(mediaOrderDto.getUserId());
             userBuyRecordDto.setOderId(mediaOrderDto.getOrderId());
+            userBuyRecordDto.setOderAmount(mediaOrderDto.getOrderAmount());
             userBuyRecordDto.setBuy(true);
             this.saveData(userBuyRecordDto, UserBuyRecord.class);
             printWriter.write("OK");
@@ -159,15 +187,32 @@ public class UserBuyRecordAppService extends BaseAppService<UserBuyRecordDomainS
     }
 
     public boolean checkOrder(UserBuyRecordDto userBuyRecordDto) throws Exception {
-        return this.userIsBuyVedio(userBuyRecordDto.getUserId(), userBuyRecordDto.getVideoId());
+        MediaDto mediaDto = this.mediaAppService.findById(Long.valueOf(userBuyRecordDto.getVideoId()), MediaDto.class);
+        if (mediaDto.isFree()) {
+            return true;
+        } else {
+            return this.userIsBuyVedio(userBuyRecordDto.getUserId(), userBuyRecordDto.getVideoId());
+        }
     }
 
 
     public MediaDto getMediaByAuth(UserBuyRecordDto userBuyRecordDto) throws Exception {
-        if (this.userIsBuyVedio(userBuyRecordDto.getUserId(), userBuyRecordDto.getVideoId())) {
-            return mediaAppService.findById(Long.valueOf(userBuyRecordDto.getVideoId() + ""), MediaDto.class);
-        } else {
-            return null;
+        log.info("根据用户查询视频--------------------用户ID:{},视频ID:{},referrer{}:", userBuyRecordDto.getUserId(), userBuyRecordDto.getVideoId(), userBuyRecordDto.getReferrer());
+        MediaDto mediaDto=this.mediaAppService.findById(Long.valueOf(userBuyRecordDto.getVideoId()), MediaDto.class);
+        if(mediaDto.isFree()){
+            return mediaDto;
+        }else{
+            if (userBuyRecordDto.getReferrer().contains("yellmedia")) {
+                if (this.userIsBuyVedio(userBuyRecordDto.getUserId(), userBuyRecordDto.getVideoId())) {
+                    return mediaDto;
+                } else {
+                    return null;
+                }
+            } else if ((userBuyRecordDto.getReferrer().contains("openid") && userBuyRecordDto.getReferrer().contains("order_sn")) || userBuyRecordDto.getReferrer().contains("karl-leo")) {
+                return mediaDto;
+            } else {
+                return null;
+            }
         }
     }
 }

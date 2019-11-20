@@ -36,5 +36,8 @@ public class Media extends BaseEntity {
     @Column(name="order_num",columnDefinition="int(11)  comment '顺序序号'")
     private int orderNum=0;
 
+    @Column(columnDefinition = " tinyint default 0  COMMENT '是否免费 0不免费,1免费' ")
+    private boolean free = false;
+
 
 }

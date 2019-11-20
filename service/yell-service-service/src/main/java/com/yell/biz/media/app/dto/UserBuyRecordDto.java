@@ -27,4 +27,10 @@ public class UserBuyRecordDto extends BaseDto {
     private boolean buy = false;
 
     private String oderId;
+
+    private String referrer;
+
+    private String source;
+
+    private String oderAmount;
 }

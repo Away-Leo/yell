@@ -41,6 +41,20 @@
                     </div>
                 </div>
                 <div class="form-group col-md-4">
+                    <label class="col-sm-4 control-label" for="freeSearch">是否免费</label>
+                    <div class="col-sm-8">
+                        <div class='col-sm-8'>
+                            <div class='onoffswitch labeled hotpink'>
+                                <input type='checkbox' name='free' class='onoffswitch-checkbox' id='freeSearch'>
+                                <label class='onoffswitch-label' for='freeSearch'>
+                                    <span class='onoffswitch-inner'></span>
+                                    <span class='onoffswitch-switch'></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-4">
                     <label class="col-sm-4 control-label">
                     </label>
                     <div class="col-sm-8">
@@ -98,6 +112,18 @@
                                         <select class='selectpicker form-control' multiple data-live-search='true'
                                                 data-style='btn-primary' name='typeCode' id='vtype'>
                                         </select>
+                                    </div>
+                                </div>
+                                <div class='form-group'>
+                                    <label for='free' class='col-sm-4 control-label'>是否免费</label>
+                                    <div class='col-sm-8'>
+                                        <div class='onoffswitch labeled hotpink'>
+                                            <input type='checkbox' name='free' class='onoffswitch-checkbox' id='free'>
+                                            <label class='onoffswitch-label' for='free'>
+                                                <span class='onoffswitch-inner'></span>
+                                                <span class='onoffswitch-switch'></span>
+                                            </label>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class='form-group'>
@@ -265,6 +291,8 @@
                 }
             }
             param.typeCode = vtypeStr.substr(0, vtypeStr.length - 1);//查询条件
+            param.backendQuery = true;//查询条件
+            param.free = $("#freeSearch").prop("checked");//查询条件
             //组装分页参数
             param.startIndex = data.start;
             param.pageSize = data.length;
@@ -347,6 +375,7 @@
         $("#vimgUrl").val(data.imgUrl);
         $("#id").val(data.id);
         $("#colorpicker1").text(data.url);
+        $("#free").prop("checked",data.free);
         initPInput("vimgUrlFile", data.imgUrl);
         $("#modalConfirm").modal();
     }
@@ -383,10 +412,12 @@
             var villustrate = $("#villustrate").val();
             var vimgUrl = $("#vimgUrl").val();
             var colorpicker1 = $("#colorpicker1").val();
+            var free = $("#free").prop("checked");
             lineData["typeCode"] = vtypeStr;
             lineData["title"] = vTitle;
             lineData["illustrate"] = villustrate;
             lineData["imgUrl"] = vimgUrl;
+            lineData["free"] = free;
             lineData["url"] = colorpicker1;
             lineData["id"] = id;
 
@@ -415,6 +446,8 @@
                         "Authorization": window.localStorage.getItem("token")
                     },
                     success: function (result) {
+                        $("#loader").fadeOut(300);
+                        $(".mask").fadeOut(300);
                         //异常判断与处理
                         if (!result.success) {
                             PXF.errorDialog(result.message);
@@ -432,6 +465,9 @@
                     },
                     error: function (XMLHttpRequest, textStatus, errorThrown) {
                         PXF.errorDialog("查询失败");
+                    },beforeSend: function () {
+                        $(".mask").show();
+                        $("#loader").fadeIn();
                     }
                 });
             },
@@ -454,9 +490,18 @@
                     targets: 1,
                     title: "视频标题",
                     data: "title"
+                }, {
+                    targets: 2,
+                    title: "是否免费",
+                    data: "free",
+                    render: function (data, type, row, meta) {
+                        var lineData=JSON.stringify(row);
+                        var str=(lineData.free==true?'是':'否');
+                        return "<span>"+str+"</span>";
+                    }
                 },
                 {
-                    targets: 2,
+                    targets: 3,
                     title: "封面图片(点击可预览影片)",
                     data: "imgUrl",
                     render: function (data, type, row, meta) {
@@ -464,7 +509,7 @@
                     }
                 },
                 {
-                    targets: 3,
+                    targets: 4,
                     title: "操作",
                     render: function (data, type, row, meta) {
                         return "<button class='btn btn-success' style='cursor: pointer' onclick='editVideo(" + JSON.stringify(row) + ")'>编辑</button>" +

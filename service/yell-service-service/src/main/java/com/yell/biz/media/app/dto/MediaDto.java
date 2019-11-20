@@ -38,4 +38,9 @@ public class MediaDto extends BaseDto {
     private int orderNum;
 
     private String userId;
+
+    private boolean free;
+
+    private boolean backendQuery;
+
 }
