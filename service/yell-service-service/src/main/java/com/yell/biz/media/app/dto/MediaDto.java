@@ -43,4 +43,9 @@ public class MediaDto extends BaseDto {
 
     private boolean backendQuery;
 
+    /**是否免费 0未转化,1已转化**/
+    private boolean changed;
+
+    private String originalUrl;
+
 }

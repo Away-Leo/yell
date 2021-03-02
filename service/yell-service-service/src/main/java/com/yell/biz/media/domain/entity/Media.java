@@ -27,6 +27,9 @@ public class Media extends BaseEntity {
     @Column(name="url",columnDefinition="varchar(255)  comment '视频地址'")
     private String url;
 
+    @Column(name="original_url",columnDefinition="varchar(255)  comment '视频原地址'")
+    private String originalUrl;
+
     @Column(name="title",columnDefinition="varchar(255)  comment '视频标题'")
     private String title;
 
@@ -38,6 +41,9 @@ public class Media extends BaseEntity {
 
     @Column(columnDefinition = " tinyint default 0  COMMENT '是否免费 0不免费,1免费' ")
     private boolean free = false;
+
+    @Column(columnDefinition = " tinyint default 0  COMMENT '是否免费 0未转化,1已转化' ")
+    private boolean changed = false;
 
 
 }

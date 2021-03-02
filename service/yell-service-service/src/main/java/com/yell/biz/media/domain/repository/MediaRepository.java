@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -49,4 +50,5 @@ public interface MediaRepository extends BaseRepository<Media,Long>{
         return findByHqlPage(pageable,hql.toString(),condition);
     }
 
+    List<Media> findTop3ByChanged(boolean changed);
 }

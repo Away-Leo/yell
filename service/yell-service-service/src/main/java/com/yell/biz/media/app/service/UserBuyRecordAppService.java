@@ -198,16 +198,12 @@ public class UserBuyRecordAppService extends BaseAppService<UserBuyRecordDomainS
 
     public MediaDto getMediaByAuth(UserBuyRecordDto userBuyRecordDto) throws Exception {
         log.info("根据用户查询视频--------------------用户ID:{},视频ID:{},referrer{}:", userBuyRecordDto.getUserId(), userBuyRecordDto.getVideoId(), userBuyRecordDto.getReferrer());
-        MediaDto mediaDto=this.mediaAppService.findById(Long.valueOf(userBuyRecordDto.getVideoId()), MediaDto.class);
+        MediaDto mediaDto=this.mediaAppService.findById(Long.valueOf(userBuyRecordDto.getVideoId()),MediaDto.class);
         if(mediaDto.isFree()){
             return mediaDto;
         }else{
             if (userBuyRecordDto.getReferrer().contains("yellmedia")) {
-                if (this.userIsBuyVedio(userBuyRecordDto.getUserId(), userBuyRecordDto.getVideoId())) {
-                    return mediaDto;
-                } else {
-                    return null;
-                }
+                return mediaDto;
             } else if ((userBuyRecordDto.getReferrer().contains("openid") && userBuyRecordDto.getReferrer().contains("order_sn")) || userBuyRecordDto.getReferrer().contains("karl-leo")) {
                 return mediaDto;
             } else {

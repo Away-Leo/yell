@@ -240,7 +240,7 @@
                 <profiles.name>yell-app</profiles.name>
             </properties>
             <activation>
-                <activeByDefault>true</activeByDefault>
+                <activeByDefault>false</activeByDefault>
             </activation>
         </profile>
         <profile>
@@ -267,10 +267,10 @@
             <id>prod3</id>
             <properties>
                 <profiles.active>prod3</profiles.active>
-                <profiles.name>yell-app9527</profiles.name>
+                <profiles.name>yell-app6666</profiles.name>
             </properties>
             <activation>
-                <activeByDefault>false</activeByDefault>
+                <activeByDefault>true</activeByDefault>
             </activation>
         </profile>
     </profiles>

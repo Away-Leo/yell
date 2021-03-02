@@ -1,5 +1,5 @@
 // var httpUrl = "https://www.pingxundata.com:8443";//正式环境
-var httpUrl = "http://karl-leo.imwork.net/apis";//本地开发环境
+var httpUrl = "http://www.yellmedia.net/apis";//本地开发环境
 // var httpUrl = "http://192.168.1.100:1234";//测试环境
 /*菜单及登录*/
 var loginUrl = {url: httpUrl + "/login", type: "post"};//登录
